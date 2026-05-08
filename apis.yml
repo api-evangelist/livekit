@@ -1,0 +1,29 @@
+aid: livekit
+url: https://raw.githubusercontent.com/api-evangelist/livekit/refs/heads/main/apis.yml
+name: LiveKit
+x-type: company
+description: >-
+  LiveKit is an open-source WebRTC platform offering rooms, recording, ingress/egress, AI Agents, and Cloud hosting for low-latency audio/video apps.
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+  - Realtime
+  - WebRTC
+  - Audio
+  - Video
+  - Open Source
+created: '2026-05-08'
+modified: '2026-05-08'
+specificationVersion: '0.19'
+apis: []
+common:
+  - type: Website
+    url: https://livekit.io/
+  - type: Plans
+    url: plans/livekit-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/livekit-rate-limits.yml
+  - type: FinOps
+    url: finops/livekit-finops.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
