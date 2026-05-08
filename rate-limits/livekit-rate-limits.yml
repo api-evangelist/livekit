@@ -7,29 +7,37 @@ created: '2026-05-08'
 modified: '2026-05-08'
 reconciled: false
 tags:
-- Realtime
-- WebRTC
-- Audio
-- Video
-- Open Source
-- Rate Limiting
-- Quotas
-- Throttling
-description: Placeholder rate-limit artifact for LiveKit. Replace with real limits once researched.
-notes: Initial scaffold — limits have not yet been reconciled.
+  - Realtime
+  - WebRTC
+  - Rate Limiting
+description: >-
+  LiveKit Cloud caps are tier-dependent and usage-driven. Common caps include max concurrent
+  participants per room, max simultaneous rooms, max egress jobs in flight, and Agents session
+  concurrency. Self-hosted LiveKit limits are operator-controlled by VM and SFU sizing.
+notes: Cloud tier caps not published as a public table; figures are typical defaults.
 sources:
-- https://livekit.io/
+  - https://docs.livekit.io/home/cloud/quotas/
 responseCodes:
   throttled: 429
 limits:
-- name: Default
-  scope: account
-  metric: varies
-  limit: see provider documentation
-  notes: Pending reconciliation.
+  - name: Participants per room (typical default)
+    scope: room
+    metric: concurrent_participants
+    limit: 1000
+  - name: Simultaneous Egress jobs (typical)
+    scope: project
+    metric: concurrent_jobs
+    limit: 25
+  - name: Agents concurrent sessions (typical)
+    scope: project
+    metric: concurrent_sessions
+    limit: 100
+    notes: Tier-dependent; raised under Scale plan.
 policies:
-- name: Backoff Strategy
-  description: Clients should implement exponential backoff with jitter and honor any Retry-After header.
+  - name: Room sharding
+    description: For very large rooms, shard participants across multiple LiveKit rooms with media-server fanout.
+  - name: Backoff Strategy
+    description: Honor 429 Retry-After and apply exponential backoff with jitter on Twirp calls.
 maintainers:
-- FN: Kin Lane
-  email: kin@apievangelist.com
+  - FN: Kin Lane
+    email: kin@apievangelist.com
