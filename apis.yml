@@ -1,7 +1,7 @@
 aid: livekit
 url: https://raw.githubusercontent.com/api-evangelist/livekit/refs/heads/main/apis.yml
 name: LiveKit
-x-type: company
+kind: company
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
   - Realtime
