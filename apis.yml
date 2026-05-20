@@ -128,6 +128,8 @@ apis:
       - AI voice assistants
       - Customer support voice agents
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/livekitco
   - type: Portal
     url: https://livekit.io/
   - type: Documentation
