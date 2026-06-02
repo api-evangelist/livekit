@@ -1,0 +1,1763 @@
+asyncapi: '2.6.0'
+info:
+  title: LiveKit Signaling Protocol
+  version: '1.0.0'
+  description: |
+    AsyncAPI description of LiveKit's signaling WebSocket protocol.
+
+    LiveKit clients connect to a LiveKit server (Cloud or self-hosted) over a
+    WebSocket at the `/rtc` endpoint. Once connected, the client and server
+    exchange Protocol Buffer encoded messages. By convention the client sends a
+    `SignalRequest` and the server replies with a `SignalResponse`; both sides
+    can send messages asynchronously at any time.
+
+    Source of truth: `livekit/protocol` repository (`livekit_rtc.proto` and
+    `livekit_models.proto`) and the public docs at
+    https://docs.livekit.io/reference/internals/client-protocol/.
+
+    All message schemas mirror the on-the-wire protobuf definitions; field
+    numbers from the `.proto` files are preserved in `x-proto-field` extensions
+    where useful for cross-referencing.
+  contact:
+    name: API Evangelist
+    url: https://apievangelist.com
+    email: kin@apievangelist.com
+  license:
+    name: Apache-2.0
+    url: https://github.com/livekit/protocol/blob/main/LICENSE
+  x-source:
+    - https://docs.livekit.io/reference/internals/client-protocol/
+    - https://github.com/livekit/protocol/blob/main/protobufs/livekit_rtc.proto
+    - https://github.com/livekit/protocol/blob/main/protobufs/livekit_models.proto
+
+defaultContentType: application/x-protobuf
+
+servers:
+  production:
+    url: wss://{host}/rtc
+    protocol: wss
+    description: |
+      LiveKit signaling WebSocket endpoint. `host` is the LiveKit server host
+      (Cloud project URL or self-hosted deployment). Protocol Buffers are sent
+      over the WebSocket as binary frames; some clients negotiate JSON-encoded
+      protobuf for text frames.
+    variables:
+      host:
+        default: your-project.livekit.cloud
+        description: LiveKit server host (Cloud project URL or self-hosted host).
+    bindings:
+      ws:
+        query:
+          type: object
+          description: Query parameters supplied on the initial `/rtc` WebSocket upgrade.
+          properties:
+            access_token:
+              type: string
+              description: Encoded JWT access token authorizing the participant for a room.
+            reconnect:
+              type: string
+              description: When `1`, resume an existing connection; triggers an ICE restart on the server.
+            auto_subscribe:
+              type: string
+              description: Default `true`. When `false`, the client must explicitly subscribe to tracks.
+            sdk:
+              type: string
+              description: SDK type identifier (`js`, `ios`, `android`, `go`, `unity`, `flutter`, `rust`, `swift`, etc.).
+            protocol:
+              type: string
+              description: Signal protocol version negotiated by the client (e.g. `15`).
+            version:
+              type: string
+              description: Client SDK version string.
+            adaptive_stream:
+              type: string
+              description: Whether the client supports adaptive streaming.
+            participant_sid:
+              type: string
+              description: Participant SID used when resuming a session.
+            network:
+              type: string
+              description: Optional network hint (e.g. `wifi`, `cellular`).
+        bindingVersion: '0.1.0'
+
+channels:
+  /rtc:
+    description: |
+      Bi-directional signaling channel. The client publishes `SignalRequest`
+      envelopes; the server publishes `SignalResponse` envelopes. Each envelope
+      is a `oneof` carrying exactly one of the signal variants defined in
+      `livekit_rtc.proto`.
+    bindings:
+      ws:
+        method: GET
+        bindingVersion: '0.1.0'
+    publish:
+      operationId: sendSignalRequest
+      summary: Client-to-server signal messages (SignalRequest oneof variants).
+      description: |
+        Each message is a `SignalRequest` whose `message` oneof selects one of
+        the documented variants below.
+      message:
+        oneOf:
+          - $ref: '#/components/messages/OfferRequest'
+          - $ref: '#/components/messages/AnswerRequest'
+          - $ref: '#/components/messages/TrickleRequest'
+          - $ref: '#/components/messages/AddTrack'
+          - $ref: '#/components/messages/MuteTrack'
+          - $ref: '#/components/messages/UpdateSubscription'
+          - $ref: '#/components/messages/UpdateTrackSettings'
+          - $ref: '#/components/messages/Leave'
+          - $ref: '#/components/messages/UpdateLayers'
+          - $ref: '#/components/messages/UpdateSubscriptionPermission'
+          - $ref: '#/components/messages/SyncState'
+          - $ref: '#/components/messages/Simulate'
+          - $ref: '#/components/messages/PingLegacy'
+          - $ref: '#/components/messages/UpdateMetadata'
+          - $ref: '#/components/messages/Ping'
+          - $ref: '#/components/messages/UpdateLocalAudioTrack'
+          - $ref: '#/components/messages/UpdateLocalVideoTrack'
+          - $ref: '#/components/messages/PublishDataTrack'
+          - $ref: '#/components/messages/UnpublishDataTrack'
+          - $ref: '#/components/messages/UpdateDataSubscription'
+    subscribe:
+      operationId: receiveSignalResponse
+      summary: Server-to-client signal messages (SignalResponse oneof variants).
+      description: |
+        Each message is a `SignalResponse` whose `message` oneof selects one of
+        the documented variants below.
+      message:
+        oneOf:
+          - $ref: '#/components/messages/Join'
+          - $ref: '#/components/messages/AnswerResponse'
+          - $ref: '#/components/messages/OfferResponse'
+          - $ref: '#/components/messages/TrickleResponse'
+          - $ref: '#/components/messages/Update'
+          - $ref: '#/components/messages/TrackPublished'
+          - $ref: '#/components/messages/LeaveResponse'
+          - $ref: '#/components/messages/MuteResponse'
+          - $ref: '#/components/messages/SpeakersChanged'
+          - $ref: '#/components/messages/RoomUpdate'
+          - $ref: '#/components/messages/ConnectionQuality'
+          - $ref: '#/components/messages/StreamStateUpdate'
+          - $ref: '#/components/messages/SubscribedQualityUpdate'
+          - $ref: '#/components/messages/SubscriptionPermissionUpdate'
+          - $ref: '#/components/messages/RefreshToken'
+          - $ref: '#/components/messages/TrackUnpublished'
+          - $ref: '#/components/messages/PongLegacy'
+          - $ref: '#/components/messages/Reconnect'
+          - $ref: '#/components/messages/Pong'
+          - $ref: '#/components/messages/SubscriptionResponse'
+          - $ref: '#/components/messages/RequestResponse'
+          - $ref: '#/components/messages/TrackSubscribed'
+          - $ref: '#/components/messages/RoomMoved'
+          - $ref: '#/components/messages/MediaSectionsRequirement'
+          - $ref: '#/components/messages/SubscribedAudioCodecUpdate'
+          - $ref: '#/components/messages/PublishDataTrackResponse'
+          - $ref: '#/components/messages/UnpublishDataTrackResponse'
+          - $ref: '#/components/messages/DataTrackSubscriberHandles'
+
+components:
+  messages:
+    # ---------- Client to Server (SignalRequest variants) ----------
+    OfferRequest:
+      name: offer
+      title: Offer (publisher)
+      summary: Client sends an SDP offer to the publisher peer connection.
+      description: Maps to `SignalRequest.offer` (proto field 1).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/SessionDescription'
+
+    AnswerRequest:
+      name: answer
+      title: Answer (subscriber)
+      summary: Client SDP answer in response to a server-sent subscriber offer.
+      description: Maps to `SignalRequest.answer` (proto field 2).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/SessionDescription'
+
+    TrickleRequest:
+      name: trickle
+      title: Trickle ICE
+      summary: ICE candidate exchanged in either direction.
+      description: Maps to `SignalRequest.trickle` (proto field 3) and `SignalResponse.trickle` (proto field 4).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/TrickleRequest'
+
+    AddTrack:
+      name: add_track
+      title: Add Track
+      summary: Request to publish a new track.
+      description: Maps to `SignalRequest.add_track` (proto field 4).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/AddTrackRequest'
+
+    MuteTrack:
+      name: mute
+      title: Mute Track (client)
+      summary: Mute or unmute a published track.
+      description: Maps to `SignalRequest.mute` (proto field 5).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/MuteTrackRequest'
+
+    UpdateSubscription:
+      name: subscription
+      title: Update Subscription
+      summary: Subscribe to or unsubscribe from one or more tracks.
+      description: Maps to `SignalRequest.subscription` (proto field 6).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/UpdateSubscription'
+
+    UpdateTrackSettings:
+      name: track_setting
+      title: Update Track Settings
+      summary: Adjust quality/dimensions/fps of subscribed tracks.
+      description: Maps to `SignalRequest.track_setting` (proto field 7).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/UpdateTrackSettings'
+
+    Leave:
+      name: leave
+      title: Leave (client)
+      summary: Client requests session termination.
+      description: Maps to `SignalRequest.leave` (proto field 8).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/LeaveRequest'
+
+    UpdateLayers:
+      name: update_layers
+      title: Update Video Layers (deprecated)
+      summary: Update published video track dimensions (deprecated).
+      description: Maps to `SignalRequest.update_layers` (proto field 10, deprecated).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/UpdateVideoLayers'
+
+    UpdateSubscriptionPermission:
+      name: subscription_permission
+      title: Update Subscription Permissions
+      summary: Update which participants can subscribe to which of this participant's tracks.
+      description: Maps to `SignalRequest.subscription_permission` (proto field 11).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/SubscriptionPermission'
+
+    SyncState:
+      name: sync_state
+      title: Sync State
+      summary: Synchronize subscription / publish state when resuming a session.
+      description: Maps to `SignalRequest.sync_state` (proto field 12).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/SyncState'
+
+    Simulate:
+      name: simulate
+      title: Simulate Scenario
+      summary: Trigger a client validation scenario on the server.
+      description: Maps to `SignalRequest.simulate` (proto field 13).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/SimulateScenario'
+
+    PingLegacy:
+      name: ping
+      title: Ping (deprecated)
+      summary: Legacy client keep-alive ping (int64 timestamp, deprecated by ping_req).
+      description: Maps to `SignalRequest.ping` (proto field 14, deprecated).
+      contentType: application/x-protobuf
+      payload:
+        type: integer
+        format: int64
+        description: Client timestamp in milliseconds since epoch.
+
+    UpdateMetadata:
+      name: update_metadata
+      title: Update Participant Metadata
+      summary: Update local participant metadata, name, or attributes.
+      description: Maps to `SignalRequest.update_metadata` (proto field 15).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/UpdateParticipantMetadata'
+
+    Ping:
+      name: ping_req
+      title: Ping
+      summary: Client keep-alive ping (current, supersedes legacy int64 ping).
+      description: Maps to `SignalRequest.ping_req` (proto field 16).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/Ping'
+
+    UpdateLocalAudioTrack:
+      name: update_audio_track
+      title: Update Local Audio Track
+      summary: Update audio feature flags (DTX, RED, stereo, etc.) on a published audio track.
+      description: Maps to `SignalRequest.update_audio_track` (proto field 17).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/UpdateLocalAudioTrack'
+
+    UpdateLocalVideoTrack:
+      name: update_video_track
+      title: Update Local Video Track
+      summary: Update dimensions for a published video track.
+      description: Maps to `SignalRequest.update_video_track` (proto field 18).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/UpdateLocalVideoTrack'
+
+    PublishDataTrack:
+      name: publish_data_track_request
+      title: Publish Data Track
+      summary: Publish a new data track.
+      description: Maps to `SignalRequest.publish_data_track_request` (proto field 19).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/PublishDataTrackRequest'
+
+    UnpublishDataTrack:
+      name: unpublish_data_track_request
+      title: Unpublish Data Track
+      summary: Remove a previously published data track.
+      description: Maps to `SignalRequest.unpublish_data_track_request` (proto field 20).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/UnpublishDataTrackRequest'
+
+    UpdateDataSubscription:
+      name: update_data_subscription
+      title: Update Data Track Subscription
+      summary: Subscribe or unsubscribe from data tracks.
+      description: Maps to `SignalRequest.update_data_subscription` (proto field 21).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/UpdateDataSubscription'
+
+    # ---------- Server to Client (SignalResponse variants) ----------
+    Join:
+      name: join
+      title: Join Response
+      summary: Server confirms the client has joined the room.
+      description: Maps to `SignalResponse.join` (proto field 1).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/JoinResponse'
+
+    AnswerResponse:
+      name: answer
+      title: Answer (publisher response)
+      summary: Server SDP answer to the publisher offer.
+      description: Maps to `SignalResponse.answer` (proto field 2).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/SessionDescription'
+
+    OfferResponse:
+      name: offer
+      title: Offer (subscriber)
+      summary: Server SDP offer for the subscriber peer connection.
+      description: Maps to `SignalResponse.offer` (proto field 3).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/SessionDescription'
+
+    TrickleResponse:
+      name: trickle
+      title: Trickle ICE (server)
+      summary: Server-sent ICE candidate.
+      description: Maps to `SignalResponse.trickle` (proto field 4).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/TrickleRequest'
+
+    Update:
+      name: update
+      title: Participant Update
+      summary: Notification of remote participants joining, leaving, or changing.
+      description: Maps to `SignalResponse.update` (proto field 5).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/ParticipantUpdate'
+
+    TrackPublished:
+      name: track_published
+      title: Track Published
+      summary: Confirms a track publication and returns the assigned track info.
+      description: Maps to `SignalResponse.track_published` (proto field 6).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/TrackPublishedResponse'
+
+    LeaveResponse:
+      name: leave
+      title: Leave (server)
+      summary: Server instructs the client to disconnect, resume, or reconnect.
+      description: Maps to `SignalResponse.leave` (proto field 8).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/LeaveRequest'
+
+    MuteResponse:
+      name: mute
+      title: Mute Track (server)
+      summary: Server-initiated mute/unmute notification.
+      description: Maps to `SignalResponse.mute` (proto field 9).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/MuteTrackRequest'
+
+    SpeakersChanged:
+      name: speakers_changed
+      title: Speakers Changed
+      summary: Delta list of active speakers.
+      description: Maps to `SignalResponse.speakers_changed` (proto field 10).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/SpeakersChanged'
+
+    RoomUpdate:
+      name: room_update
+      title: Room Update
+      summary: Room metadata change.
+      description: Maps to `SignalResponse.room_update` (proto field 11).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/RoomUpdate'
+
+    ConnectionQuality:
+      name: connection_quality
+      title: Connection Quality Update
+      summary: Connection quality updates for one or more participants.
+      description: Maps to `SignalResponse.connection_quality` (proto field 12).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/ConnectionQualityUpdate'
+
+    StreamStateUpdate:
+      name: stream_state_update
+      title: Stream State Update
+      summary: Track-level stream state (active or paused) updates.
+      description: Maps to `SignalResponse.stream_state_update` (proto field 13).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/StreamStateUpdate'
+
+    SubscribedQualityUpdate:
+      name: subscribed_quality_update
+      title: Subscribed Quality Update
+      summary: Updates the set of enabled video qualities for a subscribed track.
+      description: Maps to `SignalResponse.subscribed_quality_update` (proto field 14).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/SubscribedQualityUpdate'
+
+    SubscriptionPermissionUpdate:
+      name: subscription_permission_update
+      title: Subscription Permission Update
+      summary: Notification that a participant's subscription permission to a track has changed.
+      description: Maps to `SignalResponse.subscription_permission_update` (proto field 15).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/SubscriptionPermissionUpdate'
+
+    RefreshToken:
+      name: refresh_token
+      title: Refresh Token
+      summary: Server-issued replacement access token before the current token expires.
+      description: Maps to `SignalResponse.refresh_token` (proto field 16).
+      contentType: application/x-protobuf
+      payload:
+        type: string
+        description: New JWT access token.
+
+    TrackUnpublished:
+      name: track_unpublished
+      title: Track Unpublished
+      summary: A previously published track has been unpublished.
+      description: Maps to `SignalResponse.track_unpublished` (proto field 17).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/TrackUnpublishedResponse'
+
+    PongLegacy:
+      name: pong
+      title: Pong (deprecated)
+      summary: Legacy server pong (int64 timestamp, deprecated by pong_resp).
+      description: Maps to `SignalResponse.pong` (proto field 18, deprecated).
+      contentType: application/x-protobuf
+      payload:
+        type: integer
+        format: int64
+        description: Echoed client timestamp in milliseconds since epoch.
+
+    Reconnect:
+      name: reconnect
+      title: Reconnect Response
+      summary: Sent during a successful WebSocket resume with updated ICE servers and config.
+      description: Maps to `SignalResponse.reconnect` (proto field 19).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/ReconnectResponse'
+
+    Pong:
+      name: pong_resp
+      title: Pong
+      summary: Server response to client `Ping` (current).
+      description: Maps to `SignalResponse.pong_resp` (proto field 20).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/Pong'
+
+    SubscriptionResponse:
+      name: subscription_response
+      title: Subscription Response
+      summary: Result of a subscription operation (success or error).
+      description: Maps to `SignalResponse.subscription_response` (proto field 21).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/SubscriptionResponse'
+
+    RequestResponse:
+      name: request_response
+      title: Request Response
+      summary: Server response to a request identified by `request_id` (mute, add_track, etc.).
+      description: Maps to `SignalResponse.request_response` (proto field 22).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/RequestResponse'
+
+    TrackSubscribed:
+      name: track_subscribed
+      title: Track Subscribed
+      summary: Notification that a subscribed track is now ready for media.
+      description: Maps to `SignalResponse.track_subscribed` (proto field 23).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/TrackSubscribed'
+
+    RoomMoved:
+      name: room_moved
+      title: Room Moved
+      summary: The participant has been migrated to a different room/server.
+      description: Maps to `SignalResponse.room_moved` (proto field 24).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/RoomMovedResponse'
+
+    MediaSectionsRequirement:
+      name: media_sections_requirement
+      title: Media Sections Requirement
+      summary: Required number of audio and video media sections for the publisher.
+      description: Maps to `SignalResponse.media_sections_requirement` (proto field 25).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/MediaSectionsRequirement'
+
+    SubscribedAudioCodecUpdate:
+      name: subscribed_audio_codec_update
+      title: Subscribed Audio Codec Update
+      summary: Updates the audio codec subscription preferences for a track.
+      description: Maps to `SignalResponse.subscribed_audio_codec_update` (proto field 26).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/SubscribedAudioCodecUpdate'
+
+    PublishDataTrackResponse:
+      name: publish_data_track_response
+      title: Publish Data Track Response
+      summary: Server response after publishing a data track.
+      description: Maps to `SignalResponse.publish_data_track_response` (proto field 27).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/PublishDataTrackResponse'
+
+    UnpublishDataTrackResponse:
+      name: unpublish_data_track_response
+      title: Unpublish Data Track Response
+      summary: Server response after unpublishing a data track.
+      description: Maps to `SignalResponse.unpublish_data_track_response` (proto field 28).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/UnpublishDataTrackResponse'
+
+    DataTrackSubscriberHandles:
+      name: data_track_subscriber_handles
+      title: Data Track Subscriber Handles
+      summary: Mapping from incoming packet handles to subscribed data track SIDs.
+      description: Maps to `SignalResponse.data_track_subscriber_handles` (proto field 29).
+      contentType: application/x-protobuf
+      payload:
+        $ref: '#/components/schemas/DataTrackSubscriberHandles'
+
+  schemas:
+    # ----- Core SDP and ICE -----
+    SessionDescription:
+      type: object
+      description: WebRTC session description (SDP).
+      properties:
+        type:
+          type: string
+          description: SDP type. One of `answer`, `offer`, `pranswer`, `rollback`.
+          enum: [answer, offer, pranswer, rollback]
+          x-proto-field: 1
+        sdp:
+          type: string
+          description: SDP body.
+          x-proto-field: 2
+        id:
+          type: integer
+          format: uint32
+          description: Optional ordering identifier used to correlate offer/answer pairs.
+          x-proto-field: 3
+        midToTrackId:
+          type: object
+          description: Map from SDP `mid` to LiveKit track SID.
+          additionalProperties:
+            type: string
+          x-proto-field: 4
+
+    TrickleRequest:
+      type: object
+      description: A trickled ICE candidate destined for one of the peer connections.
+      properties:
+        candidateInit:
+          type: string
+          description: JSON-serialized RTCIceCandidateInit.
+          x-proto-field: 1
+        target:
+          $ref: '#/components/schemas/SignalTarget'
+          x-proto-field: 2
+        final:
+          type: boolean
+          description: True for the end-of-candidates signal.
+          x-proto-field: 3
+
+    SignalTarget:
+      type: string
+      description: Identifies which peer connection a signal is targeted at.
+      enum:
+        - PUBLISHER
+        - SUBSCRIBER
+
+    # ----- Track publish / mute -----
+    SimulcastCodec:
+      type: object
+      description: Codec configuration for a simulcast track.
+      properties:
+        codec:
+          type: string
+          x-proto-field: 1
+        cid:
+          type: string
+          description: Client-assigned track id for this codec layer.
+          x-proto-field: 2
+        layers:
+          type: array
+          items:
+            $ref: '#/components/schemas/VideoLayer'
+          x-proto-field: 4
+        videoLayerMode:
+          $ref: '#/components/schemas/VideoLayerMode'
+          x-proto-field: 5
+
+    VideoLayerMode:
+      type: string
+      enum: [UNSPECIFIED, SVC, SIMULCAST]
+      description: VideoLayer.Mode from livekit_models.proto.
+
+    AddTrackRequest:
+      type: object
+      description: Request to publish a track.
+      properties:
+        cid:
+          type: string
+          description: Client-assigned track id used to match the RTC media track.
+          x-proto-field: 1
+        name:
+          type: string
+          x-proto-field: 2
+        type:
+          $ref: '#/components/schemas/TrackType'
+          x-proto-field: 3
+        width:
+          type: integer
+          format: uint32
+          x-proto-field: 4
+        height:
+          type: integer
+          format: uint32
+          x-proto-field: 5
+        muted:
+          type: boolean
+          x-proto-field: 6
+        disableDtx:
+          type: boolean
+          description: Deprecated; use `audioFeatures`.
+          x-proto-field: 7
+          deprecated: true
+        source:
+          $ref: '#/components/schemas/TrackSource'
+          x-proto-field: 8
+        layers:
+          type: array
+          items:
+            $ref: '#/components/schemas/VideoLayer'
+          x-proto-field: 9
+        simulcastCodecs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SimulcastCodec'
+          x-proto-field: 10
+        sid:
+          type: string
+          description: Server-assigned track SID when adding a codec to an existing track.
+          x-proto-field: 11
+        stereo:
+          type: boolean
+          deprecated: true
+          x-proto-field: 12
+        disableRed:
+          type: boolean
+          x-proto-field: 13
+        encryption:
+          $ref: '#/components/schemas/EncryptionType'
+          x-proto-field: 14
+        stream:
+          type: string
+          description: Logical stream grouping for the track.
+          x-proto-field: 15
+        backupCodecPolicy:
+          $ref: '#/components/schemas/BackupCodecPolicy'
+          x-proto-field: 16
+        audioFeatures:
+          type: array
+          items:
+            $ref: '#/components/schemas/AudioTrackFeature'
+          x-proto-field: 17
+        packetTrailerFeatures:
+          type: array
+          items:
+            $ref: '#/components/schemas/PacketTrailerFeature'
+          x-proto-field: 18
+
+    MuteTrackRequest:
+      type: object
+      properties:
+        sid:
+          type: string
+          x-proto-field: 1
+        muted:
+          type: boolean
+          x-proto-field: 2
+
+    # ----- Subscription management -----
+    UpdateSubscription:
+      type: object
+      properties:
+        trackSids:
+          type: array
+          items:
+            type: string
+          x-proto-field: 1
+        subscribe:
+          type: boolean
+          x-proto-field: 2
+        participantTracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipantTracks'
+          x-proto-field: 3
+
+    ParticipantTracks:
+      type: object
+      properties:
+        participantSid:
+          type: string
+        trackSids:
+          type: array
+          items:
+            type: string
+
+    UpdateTrackSettings:
+      type: object
+      properties:
+        trackSids:
+          type: array
+          items:
+            type: string
+          x-proto-field: 1
+        disabled:
+          type: boolean
+          x-proto-field: 3
+        quality:
+          $ref: '#/components/schemas/VideoQuality'
+          deprecated: true
+          x-proto-field: 4
+        width:
+          type: integer
+          format: uint32
+          x-proto-field: 5
+        height:
+          type: integer
+          format: uint32
+          x-proto-field: 6
+        fps:
+          type: integer
+          format: uint32
+          x-proto-field: 7
+        priority:
+          type: integer
+          format: uint32
+          description: Subscription priority. 1 is highest; 0 means unset.
+          x-proto-field: 8
+
+    UpdateLocalAudioTrack:
+      type: object
+      properties:
+        trackSid:
+          type: string
+          x-proto-field: 1
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/AudioTrackFeature'
+          x-proto-field: 2
+
+    UpdateLocalVideoTrack:
+      type: object
+      properties:
+        trackSid:
+          type: string
+          x-proto-field: 1
+        width:
+          type: integer
+          format: uint32
+          x-proto-field: 2
+        height:
+          type: integer
+          format: uint32
+          x-proto-field: 3
+
+    UpdateVideoLayers:
+      type: object
+      deprecated: true
+      properties:
+        trackSid:
+          type: string
+          x-proto-field: 1
+        layers:
+          type: array
+          items:
+            $ref: '#/components/schemas/VideoLayer'
+          x-proto-field: 2
+
+    UpdateParticipantMetadata:
+      type: object
+      properties:
+        metadata:
+          type: string
+          x-proto-field: 1
+        name:
+          type: string
+          x-proto-field: 2
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          x-proto-field: 3
+        requestId:
+          type: integer
+          format: uint32
+          x-proto-field: 4
+
+    # ----- Data tracks -----
+    PublishDataTrackRequest:
+      type: object
+      properties:
+        pubHandle:
+          type: integer
+          format: uint32
+          description: Client-assigned 16-bit identifier attached to packets sent by the publisher.
+          x-proto-field: 1
+        name:
+          type: string
+          description: Human-readable identifier, unique per publisher (<=256 chars).
+          x-proto-field: 2
+        encryption:
+          $ref: '#/components/schemas/EncryptionType'
+          x-proto-field: 3
+
+    PublishDataTrackResponse:
+      type: object
+      properties:
+        info:
+          $ref: '#/components/schemas/DataTrackInfo'
+          x-proto-field: 1
+
+    UnpublishDataTrackRequest:
+      type: object
+      properties:
+        pubHandle:
+          type: integer
+          format: uint32
+          x-proto-field: 1
+
+    UnpublishDataTrackResponse:
+      type: object
+      properties:
+        info:
+          $ref: '#/components/schemas/DataTrackInfo'
+          x-proto-field: 1
+
+    UpdateDataSubscription:
+      type: object
+      properties:
+        updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateDataSubscriptionUpdate'
+          x-proto-field: 1
+
+    UpdateDataSubscriptionUpdate:
+      type: object
+      description: Single entry in `UpdateDataSubscription.updates`.
+      properties:
+        trackSid:
+          type: string
+          x-proto-field: 1
+        subscribe:
+          type: boolean
+          x-proto-field: 2
+        options:
+          $ref: '#/components/schemas/DataTrackSubscriptionOptions'
+          x-proto-field: 3
+
+    DataTrackSubscriptionOptions:
+      type: object
+      description: Subscriber options for a data track (see livekit_models.proto).
+      additionalProperties: true
+
+    DataTrackInfo:
+      type: object
+      description: Descriptor for a data track (see livekit_models.proto).
+      additionalProperties: true
+
+    DataTrackSubscriberHandles:
+      type: object
+      description: Maps subscriber handles in incoming packets to the track SIDs they belong to.
+      properties:
+        subHandles:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/PublishedDataTrack'
+          x-proto-field: 1
+
+    PublishedDataTrack:
+      type: object
+      properties:
+        publisherIdentity:
+          type: string
+          x-proto-field: 1
+        publisherSid:
+          type: string
+          x-proto-field: 2
+        trackSid:
+          type: string
+          x-proto-field: 3
+
+    # ----- Join, leave, reconnect -----
+    JoinResponse:
+      type: object
+      description: Sent by the server in response to a join.
+      properties:
+        room:
+          $ref: '#/components/schemas/Room'
+          x-proto-field: 1
+        participant:
+          $ref: '#/components/schemas/ParticipantInfo'
+          x-proto-field: 2
+        otherParticipants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipantInfo'
+          x-proto-field: 3
+        serverVersion:
+          type: string
+          deprecated: true
+          x-proto-field: 4
+        iceServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ICEServer'
+          x-proto-field: 5
+        subscriberPrimary:
+          type: boolean
+          description: When true, the subscriber peer connection is primary.
+          x-proto-field: 6
+        alternativeUrl:
+          type: string
+          description: When set, the client should retry connecting to this URL instead.
+          x-proto-field: 7
+        clientConfiguration:
+          $ref: '#/components/schemas/ClientConfiguration'
+          x-proto-field: 8
+        serverRegion:
+          type: string
+          deprecated: true
+          x-proto-field: 9
+        pingTimeout:
+          type: integer
+          format: int32
+          x-proto-field: 10
+        pingInterval:
+          type: integer
+          format: int32
+          x-proto-field: 11
+        serverInfo:
+          $ref: '#/components/schemas/ServerInfo'
+          x-proto-field: 12
+        sifTrailer:
+          type: string
+          format: byte
+          description: Server-Injected-Frame trailer used to identify unencrypted frames when e2ee is enabled.
+          x-proto-field: 13
+        enabledPublishCodecs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Codec'
+          x-proto-field: 14
+        fastPublish:
+          type: boolean
+          description: When true, the client should pre-establish the publisher peer connection on join.
+          x-proto-field: 15
+
+    ReconnectResponse:
+      type: object
+      properties:
+        iceServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ICEServer'
+          x-proto-field: 1
+        clientConfiguration:
+          $ref: '#/components/schemas/ClientConfiguration'
+          x-proto-field: 2
+        serverInfo:
+          $ref: '#/components/schemas/ServerInfo'
+          x-proto-field: 3
+        lastMessageSeq:
+          type: integer
+          format: uint32
+          description: Last sequence number of the reliable message received before resuming.
+          x-proto-field: 4
+
+    LeaveRequest:
+      type: object
+      description: Either client- or server-initiated session termination.
+      properties:
+        canReconnect:
+          type: boolean
+          description: Deprecated; superseded by `action` starting in protocol version 13.
+          deprecated: true
+          x-proto-field: 1
+        reason:
+          $ref: '#/components/schemas/DisconnectReason'
+          x-proto-field: 2
+        action:
+          $ref: '#/components/schemas/LeaveAction'
+          x-proto-field: 3
+        regions:
+          $ref: '#/components/schemas/RegionSettings'
+          x-proto-field: 4
+
+    LeaveAction:
+      type: string
+      enum: [DISCONNECT, RESUME, RECONNECT]
+      description: Action a client should take on receiving a `LeaveRequest`.
+
+    RoomMovedResponse:
+      type: object
+      properties:
+        room:
+          $ref: '#/components/schemas/Room'
+          x-proto-field: 1
+        token:
+          type: string
+          description: New reconnect token for the new room.
+          x-proto-field: 2
+        participant:
+          $ref: '#/components/schemas/ParticipantInfo'
+          x-proto-field: 3
+        otherParticipants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipantInfo'
+          x-proto-field: 4
+
+    # ----- Tracks notifications -----
+    TrackPublishedResponse:
+      type: object
+      properties:
+        cid:
+          type: string
+          x-proto-field: 1
+        track:
+          $ref: '#/components/schemas/TrackInfo'
+          x-proto-field: 2
+
+    TrackUnpublishedResponse:
+      type: object
+      properties:
+        trackSid:
+          type: string
+          x-proto-field: 1
+
+    TrackSubscribed:
+      type: object
+      properties:
+        trackSid:
+          type: string
+          x-proto-field: 1
+
+    # ----- Participants -----
+    ParticipantUpdate:
+      type: object
+      properties:
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipantInfo'
+          x-proto-field: 1
+
+    # ----- Speakers / connection quality / stream state -----
+    SpeakersChanged:
+      type: object
+      properties:
+        speakers:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeakerInfo'
+          x-proto-field: 1
+
+    SpeakerInfo:
+      type: object
+      properties:
+        sid:
+          type: string
+        level:
+          type: number
+          format: float
+        active:
+          type: boolean
+
+    RoomUpdate:
+      type: object
+      properties:
+        room:
+          $ref: '#/components/schemas/Room'
+          x-proto-field: 1
+
+    ConnectionQualityInfo:
+      type: object
+      properties:
+        participantSid:
+          type: string
+          x-proto-field: 1
+        quality:
+          $ref: '#/components/schemas/ConnectionQuality'
+          x-proto-field: 2
+        score:
+          type: number
+          format: float
+          x-proto-field: 3
+
+    ConnectionQualityUpdate:
+      type: object
+      properties:
+        updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectionQualityInfo'
+          x-proto-field: 1
+
+    StreamStateInfo:
+      type: object
+      properties:
+        participantSid:
+          type: string
+          x-proto-field: 1
+        trackSid:
+          type: string
+          x-proto-field: 2
+        state:
+          $ref: '#/components/schemas/StreamState'
+          x-proto-field: 3
+
+    StreamStateUpdate:
+      type: object
+      properties:
+        streamStates:
+          type: array
+          items:
+            $ref: '#/components/schemas/StreamStateInfo'
+          x-proto-field: 1
+
+    StreamState:
+      type: string
+      enum: [ACTIVE, PAUSED]
+
+    # ----- Subscribed quality -----
+    SubscribedQuality:
+      type: object
+      properties:
+        quality:
+          $ref: '#/components/schemas/VideoQuality'
+          x-proto-field: 1
+        enabled:
+          type: boolean
+          x-proto-field: 2
+
+    SubscribedCodec:
+      type: object
+      properties:
+        codec:
+          type: string
+          x-proto-field: 1
+        qualities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscribedQuality'
+          x-proto-field: 2
+
+    SubscribedQualityUpdate:
+      type: object
+      properties:
+        trackSid:
+          type: string
+          x-proto-field: 1
+        subscribedQualities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscribedQuality'
+          deprecated: true
+          x-proto-field: 2
+        subscribedCodecs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscribedCodec'
+          x-proto-field: 3
+
+    SubscribedAudioCodec:
+      type: object
+      description: Audio codec subscription preference (see livekit_models.proto).
+      additionalProperties: true
+
+    SubscribedAudioCodecUpdate:
+      type: object
+      properties:
+        trackSid:
+          type: string
+          x-proto-field: 1
+        subscribedAudioCodecs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscribedAudioCodec'
+          x-proto-field: 2
+
+    # ----- Permissions -----
+    TrackPermission:
+      type: object
+      properties:
+        participantSid:
+          type: string
+          x-proto-field: 1
+        allTracks:
+          type: boolean
+          x-proto-field: 2
+        trackSids:
+          type: array
+          items:
+            type: string
+          x-proto-field: 3
+        participantIdentity:
+          type: string
+          x-proto-field: 4
+
+    SubscriptionPermission:
+      type: object
+      properties:
+        allParticipants:
+          type: boolean
+          x-proto-field: 1
+        trackPermissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackPermission'
+          x-proto-field: 2
+
+    SubscriptionPermissionUpdate:
+      type: object
+      properties:
+        participantSid:
+          type: string
+          x-proto-field: 1
+        trackSid:
+          type: string
+          x-proto-field: 2
+        allowed:
+          type: boolean
+          x-proto-field: 3
+
+    # ----- Sync, simulate, ping -----
+    SyncState:
+      type: object
+      properties:
+        answer:
+          $ref: '#/components/schemas/SessionDescription'
+          x-proto-field: 1
+        subscription:
+          $ref: '#/components/schemas/UpdateSubscription'
+          x-proto-field: 2
+        publishTracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackPublishedResponse'
+          x-proto-field: 3
+        dataChannels:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataChannelInfo'
+          x-proto-field: 4
+        offer:
+          $ref: '#/components/schemas/SessionDescription'
+          x-proto-field: 5
+        trackSidsDisabled:
+          type: array
+          items:
+            type: string
+          x-proto-field: 6
+        datachannelReceiveStates:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataChannelReceiveState'
+          x-proto-field: 7
+        publishDataTracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublishDataTrackResponse'
+          x-proto-field: 8
+
+    DataChannelReceiveState:
+      type: object
+      properties:
+        publisherSid:
+          type: string
+          x-proto-field: 1
+        lastSeq:
+          type: integer
+          format: uint32
+          x-proto-field: 2
+
+    DataChannelInfo:
+      type: object
+      properties:
+        label:
+          type: string
+          x-proto-field: 1
+        id:
+          type: integer
+          format: uint32
+          x-proto-field: 2
+        target:
+          $ref: '#/components/schemas/SignalTarget'
+          x-proto-field: 3
+
+    SimulateScenario:
+      type: object
+      description: oneof of simulated scenarios for client validation.
+      properties:
+        speakerUpdate:
+          type: integer
+          format: int32
+          description: Simulate N seconds of speaker activity.
+          x-proto-field: 1
+        nodeFailure:
+          type: boolean
+          x-proto-field: 2
+        migration:
+          type: boolean
+          x-proto-field: 3
+        serverLeave:
+          type: boolean
+          x-proto-field: 4
+        switchCandidateProtocol:
+          $ref: '#/components/schemas/CandidateProtocol'
+          x-proto-field: 5
+        subscriberBandwidth:
+          type: integer
+          format: int64
+          description: Artificial subscriber bandwidth cap in bps. Zero clears the cap.
+          x-proto-field: 6
+        disconnectSignalOnResume:
+          type: boolean
+          x-proto-field: 7
+        disconnectSignalOnResumeNoMessages:
+          type: boolean
+          x-proto-field: 8
+        leaveRequestFullReconnect:
+          type: boolean
+          x-proto-field: 9
+
+    CandidateProtocol:
+      type: string
+      enum: [UDP, TCP, TLS]
+
+    Ping:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          format: int64
+          x-proto-field: 1
+        rtt:
+          type: integer
+          format: int64
+          description: RTT in ms computed by the client.
+          x-proto-field: 2
+
+    Pong:
+      type: object
+      properties:
+        lastPingTimestamp:
+          type: integer
+          format: int64
+          x-proto-field: 1
+        timestamp:
+          type: integer
+          format: int64
+          x-proto-field: 2
+
+    RegionSettings:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegionInfo'
+          x-proto-field: 1
+
+    RegionInfo:
+      type: object
+      properties:
+        region:
+          type: string
+          x-proto-field: 1
+        url:
+          type: string
+          x-proto-field: 2
+        distance:
+          type: integer
+          format: int64
+          x-proto-field: 3
+
+    # ----- Subscription / Request responses -----
+    SubscriptionResponse:
+      type: object
+      properties:
+        trackSid:
+          type: string
+          x-proto-field: 1
+        err:
+          $ref: '#/components/schemas/SubscriptionError'
+          x-proto-field: 2
+
+    RequestResponse:
+      type: object
+      description: Server response to a client request identified by `requestId`.
+      properties:
+        requestId:
+          type: integer
+          format: uint32
+          x-proto-field: 1
+        reason:
+          $ref: '#/components/schemas/RequestResponseReason'
+          x-proto-field: 2
+        message:
+          type: string
+          x-proto-field: 3
+        trickle:
+          $ref: '#/components/schemas/TrickleRequest'
+          x-proto-field: 4
+        addTrack:
+          $ref: '#/components/schemas/AddTrackRequest'
+          x-proto-field: 5
+        mute:
+          $ref: '#/components/schemas/MuteTrackRequest'
+          x-proto-field: 6
+        updateMetadata:
+          $ref: '#/components/schemas/UpdateParticipantMetadata'
+          x-proto-field: 7
+        updateAudioTrack:
+          $ref: '#/components/schemas/UpdateLocalAudioTrack'
+          x-proto-field: 8
+        updateVideoTrack:
+          $ref: '#/components/schemas/UpdateLocalVideoTrack'
+          x-proto-field: 9
+        publishDataTrack:
+          $ref: '#/components/schemas/PublishDataTrackRequest'
+          x-proto-field: 10
+        unpublishDataTrack:
+          $ref: '#/components/schemas/UnpublishDataTrackRequest'
+          x-proto-field: 11
+
+    RequestResponseReason:
+      type: string
+      enum:
+        - OK
+        - NOT_FOUND
+        - NOT_ALLOWED
+        - LIMIT_EXCEEDED
+        - QUEUED
+        - UNSUPPORTED_TYPE
+        - UNCLASSIFIED_ERROR
+        - INVALID_HANDLE
+        - INVALID_NAME
+        - DUPLICATE_HANDLE
+        - DUPLICATE_NAME
+
+    MediaSectionsRequirement:
+      type: object
+      properties:
+        numAudios:
+          type: integer
+          format: uint32
+          x-proto-field: 1
+        numVideos:
+          type: integer
+          format: uint32
+          x-proto-field: 2
+
+    # ----- ICE -----
+    ICEServer:
+      type: object
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+          x-proto-field: 1
+        username:
+          type: string
+          x-proto-field: 2
+        credential:
+          type: string
+          x-proto-field: 3
+
+    # ----- Connection settings / Join request (for the initial WS handshake protobuf) -----
+    ConnectionSettings:
+      type: object
+      properties:
+        autoSubscribe:
+          type: boolean
+          x-proto-field: 1
+        adaptiveStream:
+          type: boolean
+          x-proto-field: 2
+        subscriberAllowPause:
+          type: boolean
+          x-proto-field: 3
+        disableIceLite:
+          type: boolean
+          x-proto-field: 4
+        autoSubscribeDataTrack:
+          type: boolean
+          x-proto-field: 5
+
+    JoinRequest:
+      type: object
+      description: |
+        Client-side initial join payload (when not using legacy WS query params alone).
+        Some transports wrap this in `WrappedJoinRequest` with optional compression.
+      properties:
+        clientInfo:
+          $ref: '#/components/schemas/ClientInfo'
+          x-proto-field: 1
+        connectionSettings:
+          $ref: '#/components/schemas/ConnectionSettings'
+          x-proto-field: 2
+        metadata:
+          type: string
+          x-proto-field: 3
+        participantAttributes:
+          type: object
+          additionalProperties:
+            type: string
+          x-proto-field: 4
+        addTrackRequests:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddTrackRequest'
+          x-proto-field: 5
+        publisherOffer:
+          $ref: '#/components/schemas/SessionDescription'
+          x-proto-field: 6
+        reconnect:
+          type: boolean
+          x-proto-field: 7
+        reconnectReason:
+          $ref: '#/components/schemas/ReconnectReason'
+          x-proto-field: 8
+        participantSid:
+          type: string
+          x-proto-field: 9
+        syncState:
+          $ref: '#/components/schemas/SyncState'
+          x-proto-field: 10
+
+    WrappedJoinRequest:
+      type: object
+      properties:
+        compression:
+          type: string
+          enum: [NONE, GZIP]
+          x-proto-field: 1
+        joinRequest:
+          type: string
+          format: byte
+          description: Marshalled (and potentially compressed) `JoinRequest`.
+          x-proto-field: 2
+
+    # ----- Shared model types referenced from livekit_models.proto -----
+    Room:
+      type: object
+      description: Room descriptor (livekit_models.proto `Room`).
+      additionalProperties: true
+
+    ParticipantInfo:
+      type: object
+      description: Participant descriptor (livekit_models.proto `ParticipantInfo`).
+      additionalProperties: true
+
+    TrackInfo:
+      type: object
+      description: Track descriptor (livekit_models.proto `TrackInfo`).
+      additionalProperties: true
+
+    Codec:
+      type: object
+      description: Codec configuration entry (livekit_models.proto `Codec`).
+      additionalProperties: true
+
+    VideoLayer:
+      type: object
+      description: Spatial layer info for a video track (livekit_models.proto `VideoLayer`).
+      additionalProperties: true
+
+    ClientInfo:
+      type: object
+      description: Client platform and capability info (livekit_models.proto `ClientInfo`).
+      additionalProperties: true
+
+    ClientConfiguration:
+      type: object
+      description: Server-provided client settings (livekit_models.proto `ClientConfiguration`).
+      additionalProperties: true
+
+    ServerInfo:
+      type: object
+      description: Server version, region, and edition info (livekit_models.proto `ServerInfo`).
+      additionalProperties: true
+
+    # ----- Enums from livekit_models.proto -----
+    TrackType:
+      type: string
+      enum: [AUDIO, VIDEO, DATA]
+
+    TrackSource:
+      type: string
+      enum: [UNKNOWN, CAMERA, MICROPHONE, SCREEN_SHARE, SCREEN_SHARE_AUDIO]
+
+    VideoQuality:
+      type: string
+      enum: [LOW, MEDIUM, HIGH, OFF]
+
+    ConnectionQuality:
+      type: string
+      enum: [POOR, GOOD, EXCELLENT, LOST]
+
+    DisconnectReason:
+      type: string
+      description: livekit_models.proto `DisconnectReason`.
+      enum:
+        - UNKNOWN_REASON
+        - CLIENT_INITIATED
+        - DUPLICATE_IDENTITY
+        - SERVER_SHUTDOWN
+        - PARTICIPANT_REMOVED
+        - ROOM_DELETED
+        - STATE_MISMATCH
+        - JOIN_FAILURE
+        - MIGRATION
+        - SIGNAL_CLOSE
+        - ROOM_CLOSED
+        - USER_UNAVAILABLE
+        - USER_REJECTED
+        - SIP_TRUNK_FAILURE
+        - CONNECTION_TIMEOUT
+        - MEDIA_FAILURE
+
+    ReconnectReason:
+      type: string
+      description: livekit_models.proto `ReconnectReason`.
+      enum:
+        - RR_UNKNOWN
+        - RR_SIGNAL_DISCONNECTED
+        - RR_PUBLISHER_FAILED
+        - RR_SUBSCRIBER_FAILED
+        - RR_SWITCH_CANDIDATE
+
+    SubscriptionError:
+      type: string
+      description: livekit_models.proto `SubscriptionError`.
+      enum:
+        - SE_UNKNOWN
+        - SE_CODEC_UNSUPPORTED
+        - SE_TRACK_NOTFOUND
+
+    EncryptionType:
+      type: string
+      description: livekit_models.proto `Encryption.Type`.
+      enum: [NONE, GCM, CUSTOM]
+
+    BackupCodecPolicy:
+      type: string
+      description: livekit_models.proto `BackupCodecPolicy`.
+      enum: [REGRESSION, SIMULCAST]
+
+    AudioTrackFeature:
+      type: string
+      description: livekit_models.proto `AudioTrackFeature`.
+      enum:
+        - TF_STEREO
+        - TF_NO_DTX
+        - TF_AUTO_GAIN_CONTROL
+        - TF_ECHO_CANCELLATION
+        - TF_NOISE_SUPPRESSION
+        - TF_ENHANCED_NOISE_CANCELLATION
+        - TF_PRECONNECT_BUFFER
+        - TF_NO_RED
+
+    PacketTrailerFeature:
+      type: string
+      description: livekit_models.proto `PacketTrailerFeature`.
+      enum:
+        - PT_UNSPECIFIED
+        - PT_CRYPTEX

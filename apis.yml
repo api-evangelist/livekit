@@ -13,7 +13,7 @@ tags:
   - Voice
   - Cloud
 created: '2026-05-08'
-modified: '2026-05-08'
+modified: '2026-05-29'
 specificationVersion: '0.19'
 description: >-
   LiveKit is an open-source WebRTC platform with a managed Cloud offering. APIs cover Rooms,
@@ -105,6 +105,37 @@ apis:
     x-use-cases:
       - Phone-to-app voice
       - Conference dial-in
+  - aid: livekit:signaling-api
+    name: LiveKit Signaling Protocol (WebSocket)
+    tags:
+      - WebSocket
+      - Signaling
+      - WebRTC
+      - Protobuf
+      - AsyncAPI
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    baseURL: wss://your-project.livekit.cloud/rtc
+    humanURL: https://docs.livekit.io/reference/internals/client-protocol/
+    description: >-
+      Bi-directional WebSocket signaling protocol used by LiveKit clients to coordinate
+      WebRTC sessions with the SFU. Clients send `SignalRequest` protobuf messages and
+      receive `SignalResponse` protobuf messages over a single `/rtc` WebSocket connection.
+    properties:
+      - type: Documentation
+        url: https://docs.livekit.io/reference/internals/client-protocol/
+      - type: GitHub
+        url: https://github.com/livekit/protocol
+      - type: AsyncAPI
+        url: asyncapi/livekit-asyncapi.yml
+    x-features:
+      - WebSocket signaling at /rtc
+      - Protocol Buffers (SignalRequest / SignalResponse)
+      - Trickle ICE, simulcast, subscription management
+      - Data tracks and reliable / lossy data packets
+    x-use-cases:
+      - LiveKit client SDK implementations
+      - Custom signaling clients / agents
+      - Protocol-level observability and testing
   - aid: livekit:agents-api
     name: LiveKit Agents API
     tags:
