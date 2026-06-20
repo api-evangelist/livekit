@@ -2,7 +2,7 @@ aid: livekit
 url: https://raw.githubusercontent.com/api-evangelist/livekit/refs/heads/main/apis.yml
 name: LiveKit
 kind: company
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
   - Realtime
   - WebRTC
@@ -28,7 +28,7 @@ apis:
       - Rooms
       - Participants
       - Tracks
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: https://your-project.livekit.cloud
     humanURL: https://docs.livekit.io/reference/server-apis/
     description: Server-side Twirp API for managing rooms, participants, tracks, mute/unmute, and metadata.
@@ -51,7 +51,7 @@ apis:
       - RTMP
       - HLS
       - Streaming
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: https://your-project.livekit.cloud
     humanURL: https://docs.livekit.io/home/egress/overview/
     description: Record rooms or stream them to RTMP / HLS endpoints; output to S3, GCS, Azure Blob.
@@ -72,7 +72,7 @@ apis:
       - SRT
       - Whip
       - Ingress
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: https://your-project.livekit.cloud
     humanURL: https://docs.livekit.io/home/ingress/overview/
     description: Pull RTMP, SRT, or WHIP streams into LiveKit rooms.
@@ -91,7 +91,7 @@ apis:
       - SIP
       - Telephony
       - PSTN
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: https://your-project.livekit.cloud
     humanURL: https://docs.livekit.io/home/sip/overview/
     description: SIP integration for inbound and outbound PSTN calls bridged into LiveKit rooms.
@@ -113,7 +113,7 @@ apis:
       - WebRTC
       - Protobuf
       - AsyncAPI
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: wss://your-project.livekit.cloud/rtc
     humanURL: https://docs.livekit.io/reference/internals/client-protocol/
     description: >-
@@ -144,7 +144,7 @@ apis:
       - LLM
       - STT
       - TTS
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: https://your-project.livekit.cloud
     humanURL: https://docs.livekit.io/agents/
     description: Framework and runtime for voice / multimodal AI agents that join LiveKit rooms; integrates with LLM, STT, and TTS providers.
