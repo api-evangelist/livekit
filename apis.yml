@@ -159,6 +159,12 @@ apis:
       - AI voice assistants
       - Customer support voice agents
 common:
+  - type: TrustCenter
+    url: security/livekit-trust-center.yml
+  - type: VulnerabilityDisclosure
+    url: security/livekit-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/livekit-domain-security.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/livekitco
   - type: Portal
@@ -179,6 +185,8 @@ common:
     url: finops/livekit-finops.yml
   - type: LlmsText
     url: https://docs.livekit.io/llms.txt
+  - url: https://livekit.io/blog
+    type: Blog
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
