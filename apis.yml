@@ -2,7 +2,19 @@ aid: livekit
 url: https://raw.githubusercontent.com/api-evangelist/livekit/refs/heads/main/apis.yml
 name: LiveKit
 kind: company
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Freemium
+  confidence: medium
+  source:
+  - plans
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/livekit.png
 tags:
   - Realtime
   - WebRTC
