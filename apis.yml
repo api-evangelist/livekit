@@ -26,7 +26,7 @@ tags:
   - Cloud
 created: '2026-05-08'
 modified: '2026-05-29'
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 description: >-
   LiveKit is an open-source WebRTC platform with a managed Cloud offering. APIs cover Rooms,
   Participants, Tracks, Egress (recording, RTMP), Ingress (RTMP/SRT), SIP (telephony), and
