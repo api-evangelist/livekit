@@ -16,6 +16,15 @@ accessModel:
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/livekit.png
 tags:
+  - Real-Time
+  - WebRTC
+  - Audio
+  - Video
+  - Open-Source
+  - AI Agents
+  - Voice
+  - Cloud
+tags_raw:
   - Realtime
   - WebRTC
   - Audio
@@ -80,6 +89,11 @@ apis:
   - aid: livekit:ingress-api
     name: LiveKit Ingress API
     tags:
+      - RTMP
+      - SRT
+      - WHIP
+      - Ingress
+    tags_raw:
       - RTMP
       - SRT
       - Whip
@@ -151,6 +165,12 @@ apis:
   - aid: livekit:agents-api
     name: LiveKit Agents API
     tags:
+      - Artificial Intelligence
+      - Voice Agents
+      - LLM
+      - STT
+      - TTS
+    tags_raw:
       - AI
       - Voice Agents
       - LLM
