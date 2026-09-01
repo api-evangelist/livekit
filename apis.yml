@@ -102,7 +102,7 @@ apis:
     tags:
       - RTMP
       - SRT
-      - Whip
+      - WHIP
       - Ingress
     tags_raw:
       - RTMP
