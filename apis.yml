@@ -27,209 +27,210 @@ accessModel:
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/livekit.png
 tags:
-  - Real-Time
-  - WebRTC
-  - Audio
-  - Video
-  - Open-Source
-  - AI Agents
-  - Voice
-  - Cloud
+- Real-Time
+- WebRTC
+- Audio
+- Video
+- Open-Source
+- AI Agents
+- Voice
+- Cloud
 tags_raw:
-  - Realtime
-  - WebRTC
-  - Audio
-  - Video
-  - Open Source
-  - AI Agents
-  - Voice
-  - Cloud
+- Realtime
+- WebRTC
+- Audio
+- Video
+- Open Source
+- AI Agents
+- Voice
+- Cloud
 created: '2026-05-08'
-modified: '2026-05-29'
+modified: '2026-09-16'
 specificationVersion: '0.23'
-description: >-
-  LiveKit is an open-source WebRTC platform with a managed Cloud offering. APIs cover Rooms,
-  Participants, Tracks, Egress (recording, RTMP), Ingress (RTMP/SRT), SIP (telephony), and
-  Agents (LLM voice agents). The server APIs use Twirp (HTTP+Protobuf); SDKs are available for
-  major languages and frameworks. Authentication via JWT room tokens.
+description: LiveKit is an open-source WebRTC platform with a managed Cloud offering. APIs cover Rooms,
+  Participants, Tracks, Egress (recording, RTMP), Ingress (RTMP/SRT), SIP (telephony), and Agents (LLM
+  voice agents). The server APIs use Twirp (HTTP+Protobuf); SDKs are available for major languages and
+  frameworks. Authentication via JWT room tokens.
 apis:
-  - aid: livekit:room-service-api
-    name: LiveKit RoomService API
-    tags:
-      - WebRTC
-      - Rooms
-      - Participants
-      - Tracks
-    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-    baseURL: https://your-project.livekit.cloud
-    humanURL: https://docs.livekit.io/reference/server-apis/
-    description: Server-side Twirp API for managing rooms, participants, tracks, mute/unmute, and metadata.
-    properties:
-      - type: Documentation
-        url: https://docs.livekit.io/reference/server-apis/
-      - type: GitHub
-        url: https://github.com/livekit/protocol
-    x-features:
-      - Twirp + Protobuf
-      - Manage rooms and participants
-      - Mute / track operations
-    x-use-cases:
-      - Video conferencing
-      - Voice apps
-  - aid: livekit:egress-api
-    name: LiveKit Egress API
-    tags:
-      - Recording
-      - RTMP
-      - HLS
-      - Streaming
-    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-    baseURL: https://your-project.livekit.cloud
-    humanURL: https://docs.livekit.io/home/egress/overview/
-    description: Record rooms or stream them to RTMP / HLS endpoints; output to S3, GCS, Azure Blob.
-    properties:
-      - type: Documentation
-        url: https://docs.livekit.io/home/egress/overview/
-    x-features:
-      - Composite or track-level recording
-      - RTMP / HLS streaming
-      - S3 / GCS / Azure Blob outputs
-    x-use-cases:
-      - Session recordings
-      - Live streaming to social platforms
-  - aid: livekit:ingress-api
-    name: LiveKit Ingress API
-    tags:
-      - RTMP
-      - SRT
-      - WHIP
-      - Ingress
-    tags_raw:
-      - RTMP
-      - SRT
-      - Whip
-      - Ingress
-    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-    baseURL: https://your-project.livekit.cloud
-    humanURL: https://docs.livekit.io/home/ingress/overview/
-    description: Pull RTMP, SRT, or WHIP streams into LiveKit rooms.
-    properties:
-      - type: Documentation
-        url: https://docs.livekit.io/home/ingress/overview/
-    x-features:
-      - RTMP, SRT, WHIP ingress
-      - Bring external streams into a room
-    x-use-cases:
-      - OBS / studio software live streaming
-      - Multi-source production
-  - aid: livekit:sip-api
-    name: LiveKit SIP (Telephony) API
-    tags:
-      - SIP
-      - Telephony
-      - PSTN
-    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-    baseURL: https://your-project.livekit.cloud
-    humanURL: https://docs.livekit.io/home/sip/overview/
-    description: SIP integration for inbound and outbound PSTN calls bridged into LiveKit rooms.
-    properties:
-      - type: Documentation
-        url: https://docs.livekit.io/home/sip/overview/
-    x-features:
-      - Inbound and outbound SIP
-      - PSTN bridging
-      - DTMF passthrough
-    x-use-cases:
-      - Phone-to-app voice
-      - Conference dial-in
-  - aid: livekit:signaling-api
-    name: LiveKit Signaling Protocol (WebSocket)
-    tags:
-      - WebSocket
-      - Signaling
-      - WebRTC
-      - Protobuf
-      - AsyncAPI
-    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-    baseURL: wss://your-project.livekit.cloud/rtc
-    humanURL: https://docs.livekit.io/reference/internals/client-protocol/
-    description: >-
-      Bi-directional WebSocket signaling protocol used by LiveKit clients to coordinate
-      WebRTC sessions with the SFU. Clients send `SignalRequest` protobuf messages and
-      receive `SignalResponse` protobuf messages over a single `/rtc` WebSocket connection.
-    properties:
-      - type: Documentation
-        url: https://docs.livekit.io/reference/internals/client-protocol/
-      - type: GitHub
-        url: https://github.com/livekit/protocol
-      - type: AsyncAPI
-        url: asyncapi/livekit-asyncapi.yml
-    x-features:
-      - WebSocket signaling at /rtc
-      - Protocol Buffers (SignalRequest / SignalResponse)
-      - Trickle ICE, simulcast, subscription management
-      - Data tracks and reliable / lossy data packets
-    x-use-cases:
-      - LiveKit client SDK implementations
-      - Custom signaling clients / agents
-      - Protocol-level observability and testing
-  - aid: livekit:agents-api
-    name: LiveKit Agents API
-    tags:
-      - Artificial Intelligence
-      - Voice Agents
-      - LLM
-      - STT
-      - TTS
-    tags_raw:
-      - AI
-      - Voice Agents
-      - LLM
-      - STT
-      - TTS
-    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-    baseURL: https://your-project.livekit.cloud
-    humanURL: https://docs.livekit.io/agents/
-    description: Framework and runtime for voice / multimodal AI agents that join LiveKit rooms; integrates with LLM, STT, and TTS providers.
-    properties:
-      - type: Documentation
-        url: https://docs.livekit.io/agents/
-    x-features:
-      - Voice / multimodal agents
-      - LLM / STT / TTS plugin model
-      - Cloud-managed agent deployment
-    x-use-cases:
-      - AI voice assistants
-      - Customer support voice agents
-common:
-  - type: TrustCenter
-    url: security/livekit-trust-center.yml
-  - type: VulnerabilityDisclosure
-    url: security/livekit-vulnerability-disclosure.yml
-  - type: DomainSecurity
-    url: security/livekit-domain-security.yml
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/livekitco
-  - type: Portal
-    url: https://livekit.io/
+- aid: livekit:room-service-api
+  name: LiveKit RoomService API
+  tags:
+  - WebRTC
+  - Rooms
+  - Participants
+  - Tracks
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  baseURL: https://your-project.livekit.cloud
+  humanURL: https://docs.livekit.io/reference/server-apis/
+  description: Server-side Twirp API for managing rooms, participants, tracks, mute/unmute, and metadata.
+  properties:
   - type: Documentation
-    url: https://docs.livekit.io/
-  - type: Pricing
-    url: https://livekit.io/pricing
+    url: https://docs.livekit.io/reference/server-apis/
   - type: GitHub
-    url: https://github.com/livekit
-  - type: License
-    url: https://github.com/livekit/livekit/blob/master/LICENSE
-  - type: Plans
-    url: plans/livekit-plans-pricing.yml
-  - type: RateLimits
-    url: rate-limits/livekit-rate-limits.yml
-  - type: FinOps
-    url: finops/livekit-finops.yml
-  - type: LlmsText
-    url: https://docs.livekit.io/llms.txt
-  - url: https://livekit.io/blog
-    type: Blog
+    url: https://github.com/livekit/protocol
+  x-features:
+  - Twirp + Protobuf
+  - Manage rooms and participants
+  - Mute / track operations
+  x-use-cases:
+  - Video conferencing
+  - Voice apps
+- aid: livekit:egress-api
+  name: LiveKit Egress API
+  tags:
+  - Recording
+  - RTMP
+  - HLS
+  - Streaming
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  baseURL: https://your-project.livekit.cloud
+  humanURL: https://docs.livekit.io/home/egress/overview/
+  description: Record rooms or stream them to RTMP / HLS endpoints; output to S3, GCS, Azure Blob.
+  properties:
+  - type: Documentation
+    url: https://docs.livekit.io/home/egress/overview/
+  x-features:
+  - Composite or track-level recording
+  - RTMP / HLS streaming
+  - S3 / GCS / Azure Blob outputs
+  x-use-cases:
+  - Session recordings
+  - Live streaming to social platforms
+- aid: livekit:ingress-api
+  name: LiveKit Ingress API
+  tags:
+  - RTMP
+  - SRT
+  - WHIP
+  - Ingress
+  tags_raw:
+  - RTMP
+  - SRT
+  - Whip
+  - Ingress
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  baseURL: https://your-project.livekit.cloud
+  humanURL: https://docs.livekit.io/home/ingress/overview/
+  description: Pull RTMP, SRT, or WHIP streams into LiveKit rooms.
+  properties:
+  - type: Documentation
+    url: https://docs.livekit.io/home/ingress/overview/
+  x-features:
+  - RTMP, SRT, WHIP ingress
+  - Bring external streams into a room
+  x-use-cases:
+  - OBS / studio software live streaming
+  - Multi-source production
+- aid: livekit:sip-api
+  name: LiveKit SIP (Telephony) API
+  tags:
+  - SIP
+  - Telephony
+  - PSTN
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  baseURL: https://your-project.livekit.cloud
+  humanURL: https://docs.livekit.io/home/sip/overview/
+  description: SIP integration for inbound and outbound PSTN calls bridged into LiveKit rooms.
+  properties:
+  - type: Documentation
+    url: https://docs.livekit.io/home/sip/overview/
+  x-features:
+  - Inbound and outbound SIP
+  - PSTN bridging
+  - DTMF passthrough
+  x-use-cases:
+  - Phone-to-app voice
+  - Conference dial-in
+- aid: livekit:signaling-api
+  name: LiveKit Signaling Protocol (WebSocket)
+  tags:
+  - WebSocket
+  - Signaling
+  - WebRTC
+  - Protobuf
+  - AsyncAPI
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  baseURL: wss://your-project.livekit.cloud/rtc
+  humanURL: https://docs.livekit.io/reference/internals/client-protocol/
+  description: Bi-directional WebSocket signaling protocol used by LiveKit clients to coordinate WebRTC
+    sessions with the SFU. Clients send `SignalRequest` protobuf messages and receive `SignalResponse`
+    protobuf messages over a single `/rtc` WebSocket connection.
+  properties:
+  - type: Documentation
+    url: https://docs.livekit.io/reference/internals/client-protocol/
+  - type: GitHub
+    url: https://github.com/livekit/protocol
+  - type: AsyncAPI
+    url: asyncapi/livekit-asyncapi.yml
+  x-features:
+  - WebSocket signaling at /rtc
+  - Protocol Buffers (SignalRequest / SignalResponse)
+  - Trickle ICE, simulcast, subscription management
+  - Data tracks and reliable / lossy data packets
+  x-use-cases:
+  - LiveKit client SDK implementations
+  - Custom signaling clients / agents
+  - Protocol-level observability and testing
+- aid: livekit:agents-api
+  name: LiveKit Agents API
+  tags:
+  - Artificial Intelligence
+  - Voice Agents
+  - LLM
+  - STT
+  - TTS
+  tags_raw:
+  - AI
+  - Voice Agents
+  - LLM
+  - STT
+  - TTS
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  baseURL: https://your-project.livekit.cloud
+  humanURL: https://docs.livekit.io/agents/
+  description: Framework and runtime for voice / multimodal AI agents that join LiveKit rooms; integrates
+    with LLM, STT, and TTS providers.
+  properties:
+  - type: Documentation
+    url: https://docs.livekit.io/agents/
+  x-features:
+  - Voice / multimodal agents
+  - LLM / STT / TTS plugin model
+  - Cloud-managed agent deployment
+  x-use-cases:
+  - AI voice assistants
+  - Customer support voice agents
+common:
+- type: Website
+  url: https://livekit.io
+- type: TrustCenter
+  url: security/livekit-trust-center.yml
+- type: VulnerabilityDisclosure
+  url: security/livekit-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/livekit-domain-security.yml
+- type: LinkedIn
+  url: https://www.linkedin.com/company/livekitco
+- type: Portal
+  url: https://livekit.io/
+- type: Documentation
+  url: https://docs.livekit.io/
+- type: Pricing
+  url: https://livekit.io/pricing
+- type: GitHub
+  url: https://github.com/livekit
+- type: License
+  url: https://github.com/livekit/livekit/blob/master/LICENSE
+- type: Plans
+  url: plans/livekit-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/livekit-rate-limits.yml
+- type: FinOps
+  url: finops/livekit-finops.yml
+- type: LlmsText
+  url: https://docs.livekit.io/llms.txt
+- url: https://livekit.io/blog
+  type: Blog
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
