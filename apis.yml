@@ -4,14 +4,18 @@ name: LiveKit
 kind: company
 deliveryModel:
   model: saas
-  open_source: false
+  license_evidence:
+    not_product:
+    - livekit/protocol
+  open_source: unknown
   commercial: true
   callable_host: false
   label: Hosted service · you call their endpoint
-  confidence: medium
+  confidence: low
   source:
   - pricing
-  generated: '2026-08-28'
+  - repository-not-product
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: freemium
@@ -31,7 +35,7 @@ tags:
 - WebRTC
 - Audio
 - Video
-- Open-Source
+- Open Source
 - AI Agents
 - Voice
 - Cloud
@@ -44,6 +48,7 @@ tags_raw:
 - AI Agents
 - Voice
 - Cloud
+- Open-Source
 created: '2026-05-08'
 modified: '2026-09-16'
 specificationVersion: '0.23'
