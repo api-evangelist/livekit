@@ -2,17 +2,17 @@
 kin_checks:
   slug: livekit
   schema_version: 0.23.0
-  scored_at: '2026-10-03'
-  run_ts: 2026-10-03T024842
+  scored_at: '2026-10-11'
+  run_ts: 2026-10-11T110117
   note: Actionable checks (missed + partial) in `checks`, plus the ids that did not
     apply in `na`. Everything else in rubric/scoring-0.23.0.yml was earned; counts
     below let you verify that.
   counts:
     total: 153
-    earned: 26
-    partial: 10
+    earned: 24
+    partial: 11
     missed: 78
-    na: 39
+    na: 40
   checks:
   - id: newsroom_present
     status: missed
@@ -197,6 +197,10 @@ kin_checks:
   - id: plans_multiple
     status: partial
     earned: 1.0
+  - id: mcp_server
+    status: partial
+    earned: 4.8
+    detail: 'grade: documented'
   - id: rate_limit_signal
     status: partial
     earned: 0.88
@@ -216,6 +220,7 @@ kin_checks:
   - graphql_sdl_present
   - graphql_type_depth
   - info_complete
+  - mcp_endpoint_discoverable
   - oauth_flows_current
   - oauth_scopes_enumerated
   - openapi_3_0
