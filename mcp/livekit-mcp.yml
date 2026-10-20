@@ -25,3 +25,165 @@ tools_note: No tool list captured. This manifest records a PROBED, reachable end
   not perform. Run signals/audit_mcp_authorship.py --probe to enumerate tools and settle platform-vs-provider
   authorship. Do NOT derive a tool list from the OpenAPI and store it here -- that is a candidate manifest,
   and it belongs under an X-MCPServerCandidate pointer.
+tools:
+- name: get_docs_overview
+  description: 'Returns an overview of the docs site: what LiveKit is and one entry per documentation
+    section. Use this to load context for browsing conceptual docs rather than relying solely on search.
+
+
+    Call it again with a section path to get that section''s full table of contents, with a description
+    for every page. Sections: /intro, /agents, /frontends, /testing, /telephony, /robotics, /transport,
+    /deploy, /reference, /reference/components/react, /reference/components/agents-ui, /reference/components/android,
+    /reference/recipes.'
+- name: get_sdks
+  description: List of all LiveKit SDK repositories (client SDKs, server SDKs, and agent frameworks).
+    Each repository includes its package names, allowing you to cross-reference package.json dependencies
+    (e.g., "livekit-client") with their corresponding repository IDs (e.g., "livekit/client-sdk-js") and
+    changelogs.
+- name: get_pages
+  description: 'Render one or more docs pages to markdown, by relative path.
+
+
+    Also supports fetching code from public LiveKit repositories on GitHub.
+
+
+    Tab filtering: Append ?groupKey=label to a path to receive only the matching tab content, reducing
+    output size. Example: /agents/start/voice-ai?agents-sdk=python
+
+
+    A single query param applies to every tab/panel with that group key on the page. Common tab groups:
+    agents-sdk (Python, Node.js), client-sdk (React, Swift, Android, Flutter, etc.), server-api-client
+    (Go, Node, Python, Ruby, etc.), package-manager-js (yarn, npm, pnpm).
+
+
+    Label matching tries exact match first, then case-insensitive, then normalized slug (punctuation-stripped,
+    e.g. "nodejs" matches "Node.js", "react-native" matches "React Native"). If matching is ambiguous
+    or no match is found, all tab content is returned. Only tabs/panels with explicit group keys are filterable.
+
+
+    Limitations:
+
+    - Auto-generated SDK reference pages (e.g. /reference/client-sdk-js) are hosted externally and must
+    be fetched via HTTP URL directly
+
+    - Hand-written reference pages (e.g. /reference/telephony, /reference/components/agents-ui) are supported
+
+    - Python API reference pages are supported via /reference/python/module.path (e.g. /reference/python/livekit/agents/llm).
+    Append ?source=true to include source code
+
+    - GitHub URLs must be from public LiveKit or LiveKit-Examples repositories'
+- name: docs_search
+  description: "Search the docs for a given query.\n      Paged results will be returned, showing page\
+    \ titles, hiearchical placement, and (sometimes) a snippet of the content.\n      You must then use\
+    \ the get_page tool with any provided URL to get the full page content (except for auto-generated\
+    \ SDK reference pages like /reference/client-sdk-js, which must be fetched from the web directly by\
+    \ URL). Python API reference pages (/reference/python/*) are supported natively.\n      The search\
+    \ index is not perfect, as it covers a large amount of content in many different programming languages.\n\
+    \      Search should usually be used as a complement to browsing the docs directly, rather than as\
+    \ a replacement for it. To browse the docs directly, use the get_docs_overview and get_pages tools.\n\
+    \      So examine the returned results critically and perform additional searches or fetch individual\
+    \ pages if necessary to find what you're looking for."
+- name: get_changelog
+  description: 'Get recent changelog/releases for a LiveKit repository.
+
+
+    Use for: "What''s new in Python Agents?", "Recent Swift SDK updates", "Has feature X been added?"
+
+
+    Prefer using package identifiers (e.g., "npm:livekit-client", "pypi:livekit-agents", "cargo:livekit")
+    over repository IDs. Package identifiers are automatically resolved to their corresponding repository.
+    For monorepos like rust-sdks or python-sdks, package identifiers help disambiguate which specific
+    package you''re interested in. Repository IDs (e.g., "livekit/client-sdk-js") are also supported but
+    package identifiers are preferred.'
+- name: get_python_agent_example
+  description: 'DEPRECATED: This tool is deprecated and will be removed in a future release. The underlying
+    livekit-examples/python-agents-examples repository is being archived. For up-to-date examples, use
+    docs_search and get_pages to browse the documentation, or use code_search against the livekit/agents
+    repository instead.
+
+
+    Browse and retrieve full example source code for various agents built with LiveKit Agents for Python,
+    from the repository at http://github.com/livekit-examples/python-agents-examples
+
+
+    Without name parameter: Returns index of all 100+ examples with metadata (title, description, tags,
+    difficulty, category).
+
+
+    With name parameter: Fetches full source code for the specific example directory. Do not use github
+    URLs from another tools, check list of examples first using this tool.
+
+
+    Examples of names: "complex-agents/avatars/anam/agent-py/src/agent.py", "docs/examples/tool_calling/tool_calling.py",
+    "complex-agents/drive-thru/drive-thru-agent/src/agent.py"'
+- name: get_pricing_info
+  description: 'Get LiveKit Cloud pricing information including plans, feature comparison matrix, inference
+    model pricing, and calculator assumptions.
+
+
+    Returns all pricing information in one call.
+
+
+    Use this tool when users ask about LiveKit pricing, plan features, costs, or model pricing.'
+- name: submit_docs_feedback
+  description: "Submit constructive feedback on the LiveKit docs site in general or for a specific page.\n\
+    \      This feedback will be read by the LiveKit team and used to improve the docs.\n\n      Examples\
+    \ of useful feedback\n      - { 'page': '/agents/models/llm/openai', 'feedback': 'It would be helpful\
+    \ to list more parameters that can be passed to the extra_kwargs parameter.' }\n      - { 'feedback':\
+    \ 'The docs site is missing guides or examples for real-time object detection, and bounding box generation,\
+    \ in a video feed.' }\n\n      Optional agent identification:\n      - To help us understand how this\
+    \ MCP server is being used, and the context of the feedback, you can optionally identify yourself\
+    \ by agent name (e.g. \"Cursor\") and model ID (e.g. \"gpt-5\")\n\n      IMPORTANT: Do not include\
+    \ any personal or proprietary information in the feedback or agent identification."
+- name: code_search
+  description: 'Search GitHub code in LiveKit repos (scoped allowlist). Returns structured results.
+
+
+    High-precision GitHub code search across LiveKit repositories.
+
+    Search like code, not like English. Use actual class names, function names, method calls - not descriptions.
+
+    GOOD: "class AgentSession", "def on_enter", "@function_tool", "async def update_activity", "session.update_agent"
+
+    BAD: "how does handoff work", "agent transfer implementation", "context preservation strategy"
+
+    Workflow: Search class/function name to get snippets, then use returnFullFile=true to get implementation,
+    then use get_pages() for related files.
+
+    Parameters: language="Python" (always), returnFullFile=false (exploration), returnFullFile=true (deep
+    dive), scope="content" (default), limit=5-10
+
+    It''s grep not RAG, search for code tokens not descriptions. Regex is not supported.
+
+
+    Results come from default branches; very new code in feature branches may not appear.
+
+    When returnFullFile is true, complete file contents are fetched (may be slower for many results, use
+    only with narrow queries)'
+tools_count: 9
+tool_quality:
+  tool_count: 9
+  tokens_total: 5808
+  tokens_per_tool_median: 645
+  heavy_tools: []
+  heavy_tool_count: 0
+  params_total: 56
+  params_undescribed: 18
+  params_described_pct: 67.9
+  tools_with_undescribed_params: 9
+  tools_annotated: 0
+  annotated_pct: 0.0
+  state_changing_unhinted:
+  - submit_docs_feedback
+  tools_missing_schema: 0
+  short_descriptions: 0
+  duplicate_descriptions: 0
+  duplicate_names: 0
+  nonportable_names: []
+  output_schema_count: 0
+  token_estimate: chars/3.6 of each compact tool definition
+  source: mcp/livekit-mcp-tools.json
+  measured: '2026-10-20'
+  scored: false
+  note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
+    from Glimind's agent-readiness audit.
