@@ -926,6 +926,30 @@ edges:
       P856 not contradicting (Kin 2026-10-20 decision 2)
   detected_by: sweep-buf-schema-registry.py
   first_seen: '2026-10-23'
+- partner_name: Hugging Face (hugging-face-hub)
+  partner: hugging-face
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: hugging-face-hub
+  evidence: https://huggingface.co/livekit
+  mirror_of: hugging-face/integrations/hugging-face-integration-edges.yml
+  apps:
+  - livekit/eot-bench-data
+  - livekit/turn-detector
+  - livekit/opt-125m-endpoint-detector-2
+  - livekit/eou-experiment
+  - livekit/opt-125m-endpoint-detector
+  - livekit/eot-visualization
+  listing_count: 3
+  detected: '2026-10-23'
+  detected_by: mirror-platform-listings.py
+  category: Hugging Face Hub datasets
+  badges:
+  - Verified publisher (Hugging Face verified organisation)
 generated: '2026-10-15'
 method: searched
 checked:
@@ -941,5 +965,6 @@ checked:
 - https://buf.build/buf.registry.module.v1.ModuleService/ListModules
 - https://buf.build/buf.registry.owner.v1.OwnerService/GetOwners
 - https://buf.build/explore
+- hugging-face/integrations/hugging-face-integration-edges.yml
 source:
 - https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/
