@@ -1,4 +1,4 @@
-# LiveKit (livekit)
+# LiveKit
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,43 +64,137 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-LiveKit is an open-source WebRTC platform with a managed Cloud offering. APIs cover Rooms, Egress (recording, RTMP), Ingress (RTMP/SRT/WHIP), SIP (telephony), and Agents (LLM voice agents). Server APIs use Twirp (HTTP+Protobuf).
+LiveKit is an open-source WebRTC platform with a managed Cloud offering. APIs cover Rooms, Participants, Tracks, Egress (recording, RTMP), Ingress (RTMP/SRT), SIP (telephony), and Agents (LLM voice agents). The server APIs use Twirp (HTTP+Protobuf); SDKs are available for major languages and frameworks. Authentication via JWT room tokens.
 
-**URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/livekit/refs/heads/main/apis.yml)
+**Areas:** Real-Time · WebRTC · Audio · Video · Open Source · AI Agents · Voice · Cloud
 
-## Type
-- **x-type:** company
+## LiveKit on APIs.io
 
-## Tags
-- Realtime, WebRTC, Audio, Video, Open Source, AI Agents, Voice, Cloud
+Everything profiled for LiveKit is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/livekit/](https://apis.io/providers/livekit/)** — or go straight to one of the APIs or properties below.
 
-## APIs
-- **LiveKit RoomService API** - Twirp/Protobuf
-- **LiveKit Egress API** - recording / streaming
-- **LiveKit Ingress API** - RTMP/SRT/WHIP ingest
-- **LiveKit SIP API** - PSTN bridging
-- **LiveKit Agents API** - voice/multimodal AI agents
+### APIs (6)
 
-All APIs reachable at the project's `https://your-project.livekit.cloud` host (or your self-hosted equivalent).
+- [LiveKit RoomService API](https://apis.io/apis/livekit/room-service-api/) — Server-side Twirp API for managing rooms, participants, tracks, mute/unmute, and metadata.
+- [LiveKit Egress API](https://apis.io/apis/livekit/egress-api/) — Record rooms or stream them to RTMP / HLS endpoints; output to S3, GCS, Azure Blob.
+- [LiveKit Ingress API](https://apis.io/apis/livekit/ingress-api/) — Pull RTMP, SRT, or WHIP streams into LiveKit rooms.
+- [LiveKit SIP (Telephony) API](https://apis.io/apis/livekit/sip-api/) — SIP integration for inbound and outbound PSTN calls bridged into LiveKit rooms.
+- [LiveKit Signaling Protocol (WebSocket)](https://apis.io/apis/livekit/signaling-api/) — Bi-directional WebSocket signaling protocol used by LiveKit clients to coordinate WebRTC sessions with the SFU. Clients send `SignalRequest` protobuf…
+- [LiveKit Agents API](https://apis.io/apis/livekit/agents-api/) — Framework and runtime for voice / multimodal AI agents that join LiveKit rooms; integrates with LLM, STT, and TTS providers.
 
-## Notes on OpenAPI
-LiveKit defines its server APIs in Protobuf (Twirp), not OpenAPI. Canonical definitions live in `livekit/protocol` GitHub repository.
+### Published properties
 
-## Timestamps
-- **Created:** 2026-05-08
-- **Modified:** 2026-05-08
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## Common Properties
-- [Portal](https://livekit.io/)
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [LiveKit Signaling Protocol](https://apis.io/asyncapis/livekit/livekit-asyncapi/)
+
+#### Event channels (1)
+
+Individual events and webhooks the provider emits.
+
+- [/rtc](https://apis.io/channels/livekit/rtc/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Moved to /providers/livekit/](https://apis.io/servers/livekit/livekit/)
+
+#### Governance rules (1)
+
+Spectral rulesets for the provider's contracts.
+
+- [LiveKit — asyncapi rules](https://apis.io/rules/livekit/livekit-asyncapi-spectral-rules/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Livekit Domain Security](https://apis.io/security/livekit/livekit-domain-security/)
+- [Livekit Trust Center](https://apis.io/security/livekit/livekit-trust-center/)
+- [Livekit Vulnerability Disclosure](https://apis.io/security/livekit/livekit-vulnerability-disclosure/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Livekit Plans Pricing](https://apis.io/plans/livekit/livekit-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Livekit Rate Limits](https://apis.io/rate-limits/livekit/livekit-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Livekit Finops](https://apis.io/finops/livekit/livekit-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://livekit.io)
 - [Documentation](https://docs.livekit.io/)
 - [Pricing](https://livekit.io/pricing)
-- [GitHub](https://github.com/livekit)
-- [License](https://github.com/livekit/livekit/blob/master/LICENSE)
-- [Plans](plans/livekit-plans-pricing.yml) - partially reconciled
-- [RateLimits](rate-limits/livekit-rate-limits.yml) - partially reconciled
-- [FinOps](finops/livekit-finops.yml) - reconciled FOCUS-aligned
+- [Blog](https://livekit.io/blog)
 
-## Maintainers
-**FN:** Kin Lane
+## API Evangelist rating
 
-**Email:** kin@apievangelist.com
+**Kin Score 31.5** — thin · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 80.0 |
+| Contract quality | 43.8 |
+| Contract governance | 13.6 |
+| Operational transparency | 23.7 |
+| Developer ergonomics | 11.9 |
+| Access clarity | 26.3 |
+
+**Agent readiness 23.3** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | — |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 16.7** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/livekit/](https://apis.io/providers/livekit/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for LiveKit: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/livekit/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
